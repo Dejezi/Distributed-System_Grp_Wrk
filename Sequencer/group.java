@@ -1,10 +1,10 @@
-package Sequencer;
+package sequencer;
 import java.net.*;
 import java.util.*;
 import java.io.*;
 import java.rmi.*;
 
-public class group implements Runnable
+public class Group implements Runnable
 {
 
     public group(String host, MsgHandler handler, String senderName)  throws GroupException
