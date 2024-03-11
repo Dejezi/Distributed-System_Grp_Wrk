@@ -67,5 +67,6 @@ public class TestSequencer implements Group.MsgHandler, Runnable {
 
     public void handle(int count, byte[] msg) {
         String msg1 = new String(msg, 0, count);
+    
     }
 }

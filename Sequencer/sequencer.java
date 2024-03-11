@@ -1,8 +1,6 @@
 package sequencer;
 
 import java.rmi.*;
-import java.net.*;
-import java.io.*;
 
 public interface Sequencer extends Remote {
     // join -- request for "sender" to join sequencer's multicasting service;
