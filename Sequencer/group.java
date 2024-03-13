@@ -1,4 +1,4 @@
-package sequencer;
+package Sequencer;
 import java.net.*;
 import java.util.*;
 import java.io.*;
@@ -7,7 +7,7 @@ import java.rmi.*;
 public class Group implements Runnable
 {
 
-    public group(String host, MsgHandler handler, String senderName)  throws GroupException
+    public void group(String host, MsgHandler handler, String senderName)  throws GroupException
     {
        // contact Sequencer on "host" to join group,
        // create MulticastSocket and thread to listen on it,

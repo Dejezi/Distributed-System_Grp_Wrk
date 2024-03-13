@@ -1,4 +1,4 @@
-package sequencer;
+package Sequencer;
 
 import java.nio.ByteBuffer;
 import java.util.Enumeration;

@@ -1,4 +1,4 @@
-package sequencer;
+package Sequencer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Vector;
 
-public class SequencerImpl extends UnicastRemoteObject implements Sequencer {
+public class SequencerImpl extends UnicastRemoteObject implements sequencer {
 
     private static final long serialVersionUID = 1L;
     History history;

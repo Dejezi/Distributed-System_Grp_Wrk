@@ -1,4 +1,4 @@
-package sequencer;
+package Sequencer;
 import java.io.*;
 import java.net.*;
 
