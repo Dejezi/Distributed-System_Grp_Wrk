@@ -4,17 +4,17 @@ import java.rmi.*;
 public class Group
 {
     String name;
-    Sequencer remote;
-    SequencerJoinInfo info;
+    Sequencer rmseq;
+    SequencerJoinInfo joininfo;
 
     public Group(String host, String senderName)  throws GroupException, UnknownHostException
     {
         this.name = senderName;
         try 
         {
-            remote = (Sequencer)Naming.lookup("rmi://localhost:1919"+"/seq");            
-            info = remote.join(name); 
-            if(info == null)
+            rmseq = (Sequencer)Naming.lookup("rmi://localhost:1800"+"/seq");            
+            joininfo = rmseq.join(name); 
+            if(joininfo == null)
             {
                 System.out.println("Username " + name + " is already taken choose another username.");
                 System.exit(0);
@@ -27,12 +27,12 @@ public class Group
 
     public void send(String msg) throws GroupException, RemoteException
     {
-        remote.sendToSequencer(msg, name);
+        rmseq.sendToSequencer(msg, name);
     }
 
     public void leave() throws RemoteException
     {
-       remote.leave(name);
+       rmseq.leave(name);
     }
 
     public class GroupException extends Exception
@@ -45,6 +45,6 @@ public class Group
 
     public void heartBeater() throws RemoteException 
     {
-        remote.heart(name);
+        rmseq.heart(name);
     }
 } 

@@ -1,31 +1,26 @@
 import java.io.*;
 import java.util.LinkedList;
 
-public class History 
-{
+public class History {
     private FileWriter fileWriter;
-    private BufferedReader fileReader;
-    private static final int MAX_ENTRIES = 1024;
+    private BufferedReader fileReader; 
+    private static final int MAX_ENTRIES = 1024; // Maximum number of entries allowed in the history
     private int entryCount = 0;
 
-    // Initialize the history file by creating it and opening it in append mode
-    public History() throws IOException 
-    {
+    // Initialization of the history file
+    public History() throws IOException {
         File file = new File("backup.txt");
-        file.delete(); // Delete the existing file if it exists
+        file.delete();
         file.createNewFile();
         fileWriter = new FileWriter(file, true);
         fileReader = new BufferedReader(new FileReader(file));
     }
 
-    // Message format is "sender|message|sequence"
-    // Write a message to the history file
-    public void writeMessage(String sender, long sequence, byte[] message) throws IOException 
-    {
-        if (entryCount >= MAX_ENTRIES) 
-        {
-            removeEntries(20); // Remove the oldest 20 entries
-            System.out.println("Deleting the oldest " + 20 + " records.");
+    public void writeMessage(String sender, long sequence, byte[] message) throws IOException {
+        if (entryCount >= MAX_ENTRIES) {
+            int c = 20;
+            removeEntries(c); // Removes the oldest entries when maximum is reached
+            System.out.println("Oldest " + c + " records deleted.");
         }
 
         String msg = new String(message, "UTF-8");
@@ -34,56 +29,59 @@ public class History
         entryCount++;
     }
 
-    // Read the history file and retrieve a requested message based on sender and sequence
-    public byte[] readMessage(String sender, long sequence) throws IOException 
-    {
+    public byte[] readMessage(String sender, long sequence) throws IOException {
         String line;
-        while ((line = fileReader.readLine()) != null) 
-        {
-            String[] parts = line.split("\\|"); 
-            String messageSender = parts[0].trim(); // trim removes any leading or trailing whitespace from string
+        while ((line = fileReader.readLine()) != null) {
+            String[] parts = line.split("\\|");
+            String messageSender = parts[0].trim();
             long messageSequence = Long.parseLong(parts[1].trim());
-            if (messageSender.equals(sender) && messageSequence == sequence) 
-            {
+            if (messageSender.equals(sender) && messageSequence == sequence) {
                 String messageString = parts[2].trim();
                 return messageString.getBytes();
             }
         }
-        return null; // If message with sender and sequence is not found
+        return null; 
     }
 
-    private void removeEntries(int count) throws IOException 
-    {
+    private void removeEntries(int count) throws IOException {
         LinkedList<String> lines = new LinkedList<>();
         String line;
-        while ((line = fileReader.readLine()) != null) 
-        {
+        
+        // Close the current file reader
+        fileReader.close();
+        
+        // Reopen the file reader to read from the beginning of the file
+        fileReader = new BufferedReader(new FileReader("backup.txt"));
+    
+        // Read lines from the file again
+        while ((line = fileReader.readLine()) != null) {
             lines.add(line);
         }
-
-        // Remove the specified number of oldest entries
-        for (int i = 0; i < count && !lines.isEmpty(); i++) 
-        {
+    
+        // Remove the specified number of entries from the beginning of the list
+        for (int i = 0; i < count && !lines.isEmpty(); i++) {
             lines.removeFirst();
         }
-
-        // Rewrite the remaining lines back to the file
+    
+        // Close the file writer before opening a new one
         fileWriter.close();
+        
+        // Open a new file writer to rewrite the file
         fileWriter = new FileWriter("backup.txt");
-        for (String entry : lines) 
-        {
+    
+        // Rewrite the file with the remaining entries
+        for (String entry : lines) {
             fileWriter.write(entry + "\n");
         }
         fileWriter.flush();
         entryCount -= count;
     }
+    
 
-    // Close the opened file
-    public void closeFile() throws IOException 
-    {
-        if (fileWriter != null) 
-        {
+    // Closes the file
+    public void closeFile() throws IOException {
+        if (fileWriter != null) {
             fileWriter.close();
         }
     }
-} 
+}
