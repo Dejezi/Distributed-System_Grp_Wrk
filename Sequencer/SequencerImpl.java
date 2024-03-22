@@ -10,6 +10,7 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Vector;
+import sequencer.Sequencer;
 
 public class SequencerImpl extends UnicastRemoteObject implements Sequencer {
 
