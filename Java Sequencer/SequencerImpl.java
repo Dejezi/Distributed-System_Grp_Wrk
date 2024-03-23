@@ -11,26 +11,26 @@ public class SequencerImpl extends UnicastRemoteObject implements Sequencer {
     MulticastSocket socket;
     int port;
     String name;
-    long sequenceNo;
-    long lastSequence;
+    long seqNo;
+    long lastSeq;
     List<String> clients;
 
     @SuppressWarnings("deprecation")
     public SequencerImpl(String seqName) throws IOException {
         this.name = seqName;
-        this.group = InetAddress.getByName("239.0.0.0");
-        this.port = 5555;
+        this.group = InetAddress.getByName("240.0.0.0");
+        this.port = 2525;
         this.socket = new MulticastSocket(port);
         this.history = new History();
-        this.sequenceNo = 0;
-        this.lastSequence = 0;
+        this.seqNo = 0;
+        this.lastSeq = 0;
         this.clients = new ArrayList<>();
 
         socket.setTimeToLive(1);
         socket.joinGroup(group);
 
-        ReadThread listener = new ReadThread(name, socket, group, port);
-        Thread t = new Thread(listener);
+        ReadThread rthread = new ReadThread(name, socket, group, port);
+        Thread t = new Thread(rthread);
         t.start();
     }
 
@@ -39,7 +39,7 @@ public class SequencerImpl extends UnicastRemoteObject implements Sequencer {
         if (!clients.contains(sender)) {
             clients.add(sender);
             System.out.println(sender + " joined the chat.");
-            return new SequencerJoinInfo(group, sequenceNo);
+            return new SequencerJoinInfo(group, seqNo);
         }
         System.out.println("Rejected: " + sender + " username is already taken.");
         return null;
@@ -60,8 +60,8 @@ public class SequencerImpl extends UnicastRemoteObject implements Sequencer {
             instream.close();
             socket.send(datagram);
             history.writeMessage(sender, msgID, msg);
-            sequenceNo++;
-            lastSequence = sequenceNo;
+            seqNo++;
+            lastSeq = seqNo;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,10 +104,10 @@ public class SequencerImpl extends UnicastRemoteObject implements Sequencer {
     public void sendToSequencer(String msg, String sender) throws RemoteException {
         String message = sender + ": " + msg;
         byte[] msgBytes = message.getBytes();
-        send(sender, msgBytes, this.sequenceNo, this.lastSequence);
+        send(sender, msgBytes, this.seqNo, this.lastSeq);
     }
 
     public void heart(String sender) throws RemoteException {
-        heartbeat(sender, lastSequence);
+        heartbeat(sender, lastSeq);
     }
 }

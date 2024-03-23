@@ -5,24 +5,24 @@ import java.util.List;
 public class Test {
     public static void main(String[] args) throws Group.GroupException {
         String name = "Tester";
-        int numUsers = 4;
-        int numMessages = 512;
+        int nUsers = 4;
+        int nMessages = 512;
 
         try {
-            List<Group> groups = new ArrayList<>();
+            List<Group> groupList = new ArrayList<>();
             // Creating groups and adding them to the list
-            for (int i = 1; i < (numUsers + 1); i++) {
-                Group group = new Group("239.0.0.0", (name + i));
-                groups.add(group);
+            for (int i = 1; i < (nUsers + 1); i++) {
+                Group group = new Group("240.0.0.0", (name + i));
+                groupList.add(group);
             }
 
             System.out.println("\nRunning test ...\n");
             // Running stress test for each group
-            for (Group group : groups) {
+            for (Group group : groupList) {
                 Thread thread = new Thread(() -> {
                     try {
                         // Sending messages for stress test
-                        for (int j = 1; j < (numMessages + 1); j++) {
+                        for (int j = 1; j < (nMessages + 1); j++) {
                             String message = "Test message number " + j;
                             group.send(message);
                             System.out.println(group.name + ": " + message);

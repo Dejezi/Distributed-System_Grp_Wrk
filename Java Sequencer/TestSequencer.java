@@ -8,17 +8,17 @@ public class TestSequencer {
     @SuppressWarnings("deprecation")
     public static void main(String[] args) throws Group.GroupException {
         try {
-            InetAddress group = InetAddress.getByName("239.0.0.0");
-            int port = 5555;
-            Scanner sc = new Scanner(System.in);
+            InetAddress group = InetAddress.getByName("240.0.0.0");
+            int port = 2525;
+            Scanner scanner = new Scanner(System.in);
             System.out.print("Enter username: ");
-            name = sc.nextLine();
+            name = scanner.nextLine();
             MulticastSocket socket = new MulticastSocket(port);
             Group grp = new Group(group.getHostAddress(), name);
             socket.setTimeToLive(1);
             socket.joinGroup(group);
-            ReadThread listener = new ReadThread(name, socket, group, port);
-            Thread t = new Thread(listener);
+            ReadThread rthread = new ReadThread(name, socket, group, port);
+            Thread t = new Thread(rthread);
             // Spawn a thread for reading messages
             t.start();
 
@@ -40,7 +40,7 @@ public class TestSequencer {
             System.out.println("\nEnter 'exit' to leave group.\n");
             while (true) {
                 String message;
-                message = sc.nextLine();
+                message = scanner.nextLine();
                 if (message.equalsIgnoreCase("exit")) {
                     grp.leave();
                     // Stop thread that reads messages
@@ -50,9 +50,9 @@ public class TestSequencer {
                 }
                 grp.send(message);
             }
-            sc.close();
+            scanner.close();
         } catch (SocketException se) {
-            System.out.println("Socket creation failed");
+            System.out.println("Socket Creation Error");
             se.printStackTrace();
         } catch (IOException ie) {
             System.out.println("Socket Access Error");

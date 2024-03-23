@@ -2,7 +2,6 @@ import java.rmi.*;
 
 public interface Sequencer extends Remote {
     // Method for a sender to request joining the sequencer's multicasting service;
-    // Returns an object specifying the multicast address and the first sequence number to expect
     public SequencerJoinInfo join(String sender) throws RemoteException, SequencerException;
 
     // Method for a sender to send a message, its identifier, and the sequence number of the last received message
